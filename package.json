@@ -1,0 +1,29 @@
+{
+  "name": "woltsummer2020-backend",
+  "version": "1.0.0",
+  "description": "First Attempt",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "server": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeLyoko2610/woltSummer2020-backend.git"
+  },
+  "author": "Dang Chuong Pham",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CodeLyoko2610/woltSummer2020-backend/issues"
+  },
+  "homepage": "https://github.com/CodeLyoko2610/woltSummer2020-backend#readme",
+  "dependencies": {
+    "config": "^3.2.5",
+    "express": "^4.17.1",
+    "express-validator": "^6.3.1",
+    "mongoose": "^5.8.9"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
