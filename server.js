@@ -1,6 +1,11 @@
 const express = require('express');
+//Import modules
+const connectDB = require('./config/db');
 
+//Innitiate express
 const app = express();
+//Connect to db
+connectDB();
 
 //Routes
 app.get('/', (req, res) => {
