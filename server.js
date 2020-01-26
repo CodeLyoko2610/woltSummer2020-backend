@@ -7,10 +7,14 @@ const app = express();
 //Connect to db
 connectDB();
 
-//Routes
+//Check route
 app.get('/', (req, res) => {
   res.send('API is running. ');
 });
+
+//Routes
+app.use('/api/restaurants', require('./routes/api/restaurants'));
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
