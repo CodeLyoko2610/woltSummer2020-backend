@@ -8,6 +8,15 @@ const {
 //Bring in model
 const Restaurant = require('../../models/Restaurants');
 
+//@route GET api/restaurants/
+//@desc Test route
+//@access Public
+router.get('/', (req, res) => {
+
+    console.dir(req.body)
+    res.send('Request received.');
+})
+
 //@route POST api/restaurants/
 //@desc Test route
 //@access Public
