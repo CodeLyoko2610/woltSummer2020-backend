@@ -12,7 +12,7 @@ restaurantsArr.map(restaurant => {
       'content-type': 'application/json'
     },
     body: restaurant
-  }
+  };
 
   request(options, (error, response, body) => {
     if (response.statusCode != 200) {
@@ -22,5 +22,5 @@ restaurantsArr.map(restaurant => {
       console.log(`Added 1 document: `);
       console.log(body);
     }
-  })
-})
+  });
+});
