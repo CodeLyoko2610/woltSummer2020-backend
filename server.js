@@ -6,6 +6,7 @@ const connectDB = require('./config/db');
 const app = express();
 //Connect to db
 connectDB();
+
 //Initialize middleware BodyParser to read body object
 app.use(express.json({
   extended: false

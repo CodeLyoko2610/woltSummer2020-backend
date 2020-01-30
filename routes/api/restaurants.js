@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
     check,
+    param,
     validationResult
 } = require('express-validator');
 
@@ -12,60 +13,36 @@ const Restaurant = require('../../models/Restaurants');
 //@desc Test route
 //@access Public
 router.get('/', (req, res) => {
-
-    console.dir(req.body)
+    console.dir(req.body);
     res.send('Request received.');
-})
+});
 
 //@route POST api/restaurants/
 //@desc Test route
 //@access Public
-router.post('/', [
-    check('blurhash').isString(),
-    check('city').isString(),
-    check('currency').isString(),
-    check('delivery_price').isNumeric(),
-    check('description').isString(),
-    check('image').isString(),
-    check('location').isArray(),
-    check('name').isString(),
-    check('online').isBoolean(),
-    check('tags').isArray(),
-], async (req, res) => {
-    let errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        })
-    }
-
-    let {
-        blurhash,
-        city,
-        currency,
-        delivery_price,
-        description,
-        image,
-        location,
-        name,
-        online,
-        tags
-    } = req.body;
-
-    try {
-        let newRestaurant = await Restaurant.findOne({
-            blurhash
-        });
-
-        if (newRestaurant) {
+router.post(
+    '/',
+    [
+        check('blurhash').isString(),
+        check('city').isString(),
+        check('currency').isString(),
+        check('delivery_price').isNumeric(),
+        check('description').isString(),
+        check('image').isString(),
+        check('location').isArray(),
+        check('name').isString(),
+        check('online').isBoolean(),
+        check('tags').isArray()
+    ],
+    async (req, res) => {
+        let errors = validationResult(req);
+        if (!errors.isEmpty()) {
             return res.status(400).json({
-                errors: [{
-                    msg: 'Restaurant already exists.'
-                }]
-            })
+                errors: errors.array()
+            });
         }
 
-        newRestaurant = new Restaurant({
+        let {
             blurhash,
             city,
             currency,
@@ -76,17 +53,68 @@ router.post('/', [
             name,
             online,
             tags
-        });
+        } = req.body;
 
-        await newRestaurant.save();
+        try {
+            let newRestaurant = await Restaurant.findOne({
+                blurhash
+            });
 
-        res.send(newRestaurant);
+            if (newRestaurant) {
+                return res.status(400).json({
+                    errors: [{
+                        msg: 'Restaurant already exists.'
+                    }]
+                });
+            }
 
+            newRestaurant = new Restaurant({
+                blurhash,
+                city,
+                currency,
+                delivery_price,
+                description,
+                image,
+                location,
+                name,
+                online,
+                tags
+            });
+
+            await newRestaurant.save();
+
+            res.send(newRestaurant);
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).send('Server error.');
+        }
+    }
+);
+
+//@route POST api/restaurants/search/q={}&lat={}&lon={}
+//@desc Query route
+//@access Public
+router.post('/search/q=:q&lat=:lat&lon=:lon', [
+    param('q').isString(),
+    param('q').isLength({
+        min: 3
+    }),
+    param('lat').isNumeric(),
+    param('lon').isNumeric()
+], (req, res) => {
+    try {
+        let errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array()
+            })
+        }
+
+        res.send(req.params);
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server error.');
     }
-
-})
+});
 
 module.exports = router;
