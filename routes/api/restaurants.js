@@ -97,11 +97,11 @@ router.post(
 router.post('/search/q=:q&lat=:lat&lon=:lon', [
     param('q').isString(),
     param('q').isLength({
-        min: 3
+        min: 1
     }),
     param('lat').isNumeric(),
     param('lon').isNumeric()
-], (req, res) => {
+], async (req, res) => {
     try {
         let errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -110,7 +110,24 @@ router.post('/search/q=:q&lat=:lat&lon=:lon', [
             })
         }
 
-        res.send(req.params);
+        let {
+            q,
+            lat,
+            lon
+        } = req.params;
+
+        //Search using $text operator
+        let result = await Restaurant.find({
+            $text: {
+                $search: q
+            }
+        })
+
+        res.send(result);
+
+
+
+
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server error.');
