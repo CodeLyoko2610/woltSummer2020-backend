@@ -9,6 +9,9 @@ const {
 //Bring in model
 const Restaurant = require('../../models/Restaurants');
 
+//Bring in functions
+const functions = require('../../functions/funcs.js');
+
 //@route GET api/restaurants/
 //@desc Test route
 //@access Public
@@ -117,17 +120,28 @@ router.post('/search/q=:q&lat=:lat&lon=:lon', [
         } = req.params;
 
         //Search using $text operator
-        let result = await Restaurant.find({
+        let results = await Restaurant.findOne({
             $text: {
                 $search: q
             }
         })
 
-        res.send(result);
 
+        if (!results) {
+            return res.status(400).json({
+                errors: [{
+                    msg: 'No restaurant found.'
+                }]
+            }) //No result
+        } else if (results && !results.length) {
+            functions.calcDistance(results.location[0], results.location[1]) //Only 1 result, object received
+        } else {
+            results.forEach(result => {
+                functions.calcDistance(result.location[0], result.location[1]) //Many results, array of obj received
+            })
+        }
 
-
-
+        res.json(results);
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server error.');
