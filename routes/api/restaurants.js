@@ -121,7 +121,8 @@ router.post(
         lon,
         lat
       } = req.params;
-      let resultsArr = [];
+      let rawResults = [];
+
       //Search using $text operator
       let results = await Restaurant.find({
         $text: {
@@ -129,6 +130,7 @@ router.post(
         }
       });
 
+      //Put the search results in array rawResults
       if (results.length === 0) {
         return res.status(400).json({
           errors: [{
@@ -136,7 +138,7 @@ router.post(
           }]
         }); //No result
       } else if (results.length === 1) {
-        resultsArr.push(
+        rawResults.push(
           functions.calcDistance(
             lon,
             lat,
@@ -147,7 +149,7 @@ router.post(
         ); //Only 1 result, 1 object received
       } else {
         results.forEach(result => {
-          resultsArr.push(
+          rawResults.push(
             functions.calcDistance(
               lon,
               lat,
@@ -159,9 +161,11 @@ router.post(
         });
       }
 
+      //Sort the raw results
+      let sorted = functions.sortResults(rawResults);
+
       res.json({
-        resultsArr,
-        results
+        sorted
       })
       //res.send("This is length: " + results.length);
     } catch (error) {

@@ -7,6 +7,7 @@ module.exports = {
     let {
       name
     } = restaurant;
+
     //Using Haversinne Formula
     let p = Math.PI / 180;
     let dLon = p * (lon2 - lon1);
@@ -19,14 +20,11 @@ module.exports = {
     let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     let d = 6371 * c;
 
-    if (d <= 3) {
-      return {
-        d,
-        name
-      };
-    } else {
-      return null
-    }
+    return {
+      d,
+      name
+    };
+
     // console.log('p: ' + p + ' ' + typeof p);
     // console.log('dLon: ' + dLon + ' ' + typeof dLon);
     // console.log('dLat: ' + dLat + ' ' + typeof dLat);
@@ -35,10 +33,16 @@ module.exports = {
     // console.log('d: ' + d + ' ' + typeof d);
   },
 
-  calcDistance1: (lat, lon) => {
-    console.log(lat);
-    console.log(lon);
-    console.log(config.get('R'));
+  sortResults: (raw) => {
+    let sorted = raw.filter(item => {
+      if (item.d <= 0.6) {
+        return item;
+      }
+    }).sort(function (a, b) {
+      return a.d - b.d;
+    });
+
+    return sorted;
   }
 };
 
