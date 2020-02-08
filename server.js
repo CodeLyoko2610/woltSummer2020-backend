@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 app.use('/api/restaurants', require('./routes/api/restaurants'));
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 6000;
 app.listen(PORT, () =>
   console.log(`Server is up and running on port ${PORT}.`)
 );

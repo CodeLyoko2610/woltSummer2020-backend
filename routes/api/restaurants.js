@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {
-  check,
-  param,
-  validationResult
-} = require('express-validator');
+const { check, param, validationResult } = require('express-validator');
 
 //Bring in model
 const Restaurant = require('../../models/Restaurants');
@@ -65,9 +61,11 @@ router.post(
 
       if (newRestaurant) {
         return res.status(400).json({
-          errors: [{
-            msg: 'Restaurant already exists.'
-          }]
+          errors: [
+            {
+              msg: 'Restaurant already exists.'
+            }
+          ]
         });
       }
 
@@ -100,8 +98,10 @@ router.post(
 router.post(
   '/search/q=:q&lon=:lon&lat=:lat',
   [
-    param('q').isString(),
-    param('q').isLength({
+    param('q')
+      .not()
+      .isEmpty(),
+    param('q', 'Please input more characters').isLength({
       min: 1
     }),
     param('lat').isNumeric(),
@@ -116,38 +116,39 @@ router.post(
         });
       }
 
-      let {
-        q,
-        lon,
-        lat
-      } = req.params;
+      let { q, lon, lat } = req.params;
+
       let rawResults = [];
 
       //Search using $text operator
       let results = await Restaurant.find({
         $text: {
-          $search: q
+          $search: q,
+          $caseSensitive: false,
+          $diacriticSensitive: false
         }
       });
 
       //Put the search results in array rawResults
       if (results.length === 0) {
         return res.status(400).json({
-          errors: [{
-            msg: 'Sorry. No restaurant found.'
-          }]
+          errors: [
+            {
+              msg: 'Sorry. No restaurant found.'
+            }
+          ]
         }); //No result
       } else if (results.length === 1) {
         rawResults.push(
           functions.calcDistance(
             lon,
             lat,
-            results.location[0],
-            results.location[1],
-            results
+            results[0].location[0],
+            results[0].location[1],
+            results[0]
           )
         ); //Only 1 result, 1 object received
-      } else {
+      } else if (results.length > 1) {
         results.forEach(result => {
           rawResults.push(
             functions.calcDistance(
@@ -159,15 +160,18 @@ router.post(
             )
           ); //Many results, array of objs received
         });
+      } else {
+        console.log('This is strange');
+        return res.send(results);
       }
 
       //Sort the raw results
       let sorted = functions.sortResults(rawResults);
 
       res.json({
-        sorted
-      })
-      //res.send("This is length: " + results.length);
+        sorted,
+        rawResults
+      });
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server error.');

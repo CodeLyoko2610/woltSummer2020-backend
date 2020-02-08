@@ -4,9 +4,7 @@ const config = require('config');
 module.exports = {
   calcDistance: (lon1, lat1, lon2, lat2, restaurant) => {
     //Destruct restaurant
-    let {
-      name
-    } = restaurant;
+    let { name } = restaurant;
 
     //Using Haversinne Formula
     let p = Math.PI / 180;
@@ -20,6 +18,7 @@ module.exports = {
     let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     let d = 6371 * c;
 
+    //---------------------------------CHANGE TO RESTAURANT LATER!-------------------------------------
     return {
       d,
       name
@@ -33,14 +32,8 @@ module.exports = {
     // console.log('d: ' + d + ' ' + typeof d);
   },
 
-  sortResults: (raw) => {
-    let sorted = raw.filter(item => {
-      if (item.d <= 0.6) {
-        return item;
-      }
-    }).sort(function (a, b) {
-      return a.d - b.d;
-    });
+  sortResults: raw => {
+    let sorted = raw.filter(item => item.d <= 3).sort((a, b) => a.d - b.d);
 
     return sorted;
   }
