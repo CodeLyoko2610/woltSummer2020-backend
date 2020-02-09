@@ -1,4 +1,4 @@
 {
-    "mongoURI": "mongodb+srv://chuongpham1:chuongpham1@wolt1-kmapf.mongodb.net/test?retryWrites=true&w=majority",
+    "mongoURI": "mongodb+srv://visitor1:visitor1@wolt1-kmapf.mongodb.net/test?retryWrites=true&w=majority",
     "R": 6371
 }

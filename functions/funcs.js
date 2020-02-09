@@ -23,7 +23,7 @@ module.exports = {
       Math.cos(p * lat1) * Math.cos(p * lat2) * Math.pow(Math.sin(dLon / 2), 2);
 
     let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    let d = 6371 * c;
+    let d = config.get('R') * c;
 
     return {
       d,
