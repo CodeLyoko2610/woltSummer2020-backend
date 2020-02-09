@@ -16,14 +16,20 @@ The author provides 2 querying method: Full match search and Partial match searc
 - Install Node.js and npm at https://nodejs.org/en/download/
 
 1. Install dependencies
-- Use: npm install
+```
+npm install
+```
+2. Start the server
+```
+npm run server
+```
 
-2. Querying
+3. Querying
 Example query:
     http://localhost:6000/api/restaurants/search/q=sushi&lon=24.93147&lat=60.17045
     METHOD: POST
 
-3. Extra
+4. Extra
 I also add routes for Testing database connection and Add new restaurants 
 - Testing db connection: 
     http://localhost:6000/api/restaurants/
@@ -33,7 +39,7 @@ I also add routes for Testing database connection and Add new restaurants
     http://localhost:6000/api/restaurants
     METHOD: POST
     Headers: {"Content-Type": "application/json"}
-
+```
     Body: {
         "city": "Helsinki",
         "currency": "EUR",
@@ -52,7 +58,7 @@ I also add routes for Testing database connection and Add new restaurants
         ],
         "blurhash": "j2DUFG8jbu8AXuLIT5Tt0B01R2;;",
         }
-
+```
 
 Happy querying !
 
