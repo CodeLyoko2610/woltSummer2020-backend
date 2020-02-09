@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { check, param, validationResult } = require('express-validator');
+const {
+  check,
+  param,
+  validationResult
+} = require('express-validator');
 
 //Bring in model
 const Restaurant = require('../../models/Restaurants');
@@ -61,11 +65,9 @@ router.post(
 
       if (newRestaurant) {
         return res.status(400).json({
-          errors: [
-            {
-              msg: 'Restaurant already exists.'
-            }
-          ]
+          errors: [{
+            msg: 'Restaurant already exists.'
+          }]
         });
       }
 
@@ -99,8 +101,8 @@ router.post(
   '/search/q=:q&lon=:lon&lat=:lat',
   [
     param('q')
-      .not()
-      .isEmpty(),
+    .not()
+    .isEmpty(),
     param('q', 'Please input more characters').isLength({
       min: 1
     }),
@@ -116,27 +118,72 @@ router.post(
         });
       }
 
-      let { q, lon, lat } = req.params;
+      let {
+        q,
+        lon,
+        lat
+      } = req.params;
 
       let rawResults = [];
 
-      //Search using $text operator
+      //-------------------------------------PARTIAL MATCH SEARCH-------------------------------------
+      //Search using $regex
       let results = await Restaurant.find({
-        $text: {
-          $search: q,
-          $caseSensitive: false,
-          $diacriticSensitive: false
-        }
-      });
+        $or: [{
+            name: {
+              $regex: `${q}`,
+              $options: 'i'
+            }
+          },
+          {
+            description: {
+              $regex: `${q}`,
+              $options: 'i'
+            }
+          },
+          {
+            tags: {
+              $regex: `${q}`,
+              $options: 'i'
+            }
+          },
+        ]
+      })
+
+      //--------------------------------------FULL MATCH SEARCH-----------------------------------
+      //Search using $text operator
+      // let extraResults = await Restaurant.find({
+      //   $text: {
+      //     $search: q,
+      //     $language: "en",
+      //     $caseSensitive: false,
+      //     $diacriticSensitive: false
+      //   }
+      // });
+
+      //--------------------------------------ADDING RESULTS FROM 2 QUERY METHOD-----------------------------------
+      // //Adding results from 2 query method
+      //let checkArr1 = functions.checkArrHasValues(results);
+      // if (checkArr1) {
+      //   while (extraResults.length > 0) {
+      //     for (let i = 0; i < results.length; i++) {
+      //       if (extraResults[0].blurhash !== results[i].blurhash) {
+      //         results.push(extraResults[0]);
+      //         extraResults.shift();
+      //         break;
+      //       }
+      //     }
+      //   }
+      // } else {
+      //   results = results.concat(extraResults);
+      // }
 
       //Put the search results in array rawResults
       if (results.length === 0) {
         return res.status(400).json({
-          errors: [
-            {
-              msg: 'Sorry. No restaurant found.'
-            }
-          ]
+          errors: [{
+            msg: 'Sorry. No restaurant found.'
+          }]
         }); //No result
       } else if (results.length === 1) {
         rawResults.push(
@@ -147,7 +194,7 @@ router.post(
             results[0].location[1],
             results[0]
           )
-        ); //Only 1 result, 1 object received
+        ); //Only 1 result, array with 1 object received
       } else if (results.length > 1) {
         results.forEach(result => {
           rawResults.push(
@@ -158,19 +205,18 @@ router.post(
               result.location[1],
               result
             )
-          ); //Many results, array of objs received
+          ); //Many results, array of many objs received
         });
       } else {
-        console.log('This is strange');
-        return res.send(results);
+        console.log('This is strange.');
+        return res.send(results); //Just for fun
       }
 
       //Sort the raw results
       let sorted = functions.sortResults(rawResults);
 
       res.json({
-        sorted,
-        rawResults
+        sorted
       });
     } catch (error) {
       console.error(error.message);

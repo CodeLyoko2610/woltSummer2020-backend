@@ -2,9 +2,16 @@
 const config = require('config');
 
 module.exports = {
+  checkArrHasValues: (arr) => {
+    if (arr.length > 0) return true;
+    return false;
+  },
+
   calcDistance: (lon1, lat1, lon2, lat2, restaurant) => {
-    //Destruct restaurant
-    let { name } = restaurant;
+    //Destruct restaurant for short view
+    let {
+      name
+    } = restaurant;
 
     //Using Haversinne Formula
     let p = Math.PI / 180;
@@ -18,18 +25,10 @@ module.exports = {
     let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     let d = 6371 * c;
 
-    //---------------------------------CHANGE TO RESTAURANT LATER!-------------------------------------
     return {
       d,
-      name
+      restaurant
     };
-
-    // console.log('p: ' + p + ' ' + typeof p);
-    // console.log('dLon: ' + dLon + ' ' + typeof dLon);
-    // console.log('dLat: ' + dLat + ' ' + typeof dLat);
-    // console.log('a: ' + a + ' ' + typeof a);
-    // console.log('c: ' + c + ' ' + typeof c);
-    // console.log('d: ' + d + ' ' + typeof d);
   },
 
   sortResults: raw => {
@@ -38,5 +37,3 @@ module.exports = {
     return sorted;
   }
 };
-
-//https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
