@@ -12,32 +12,36 @@ The author provides 2 querying method: Full match search and Partial match searc
 
 ## Getting the project up and running
 
-0. Prerequisite
+**0. Prerequisite**
 - Install Node.js and npm at https://nodejs.org/en/download/
 
-1. Install dependencies
+**1. Install dependencies**
 ```
 npm install
 ```
-2. Start the server
+**2. Start the server**
 ```
 npm run server
 ```
+**3. Querying**
 
-3. Querying
-Example query:
-    http://localhost:6000/api/restaurants/search/q=sushi&lon=24.93147&lat=60.17045
+- Example query:
+    _ _http://localhost:6000/api/restaurants/search/q=sushi&lon=24.93147&lat=60.17045_ 
+   
     METHOD: POST
 
-4. Extra
+**4. Extra**
 I also add routes for Testing database connection and Add new restaurants 
 - Testing db connection: 
-    http://localhost:6000/api/restaurants/
+    _ _http://localhost:6000/api/restaurants/_ 
+    
     METHOD: GET
 
 - Add new restaurants:
-    http://localhost:6000/api/restaurants
+     _http://localhost:6000/api/restaurants_ 
+    
     METHOD: POST
+    
     Headers: {"Content-Type": "application/json"}
 ```
     Body: {
@@ -60,7 +64,7 @@ I also add routes for Testing database connection and Add new restaurants
         }
 ```
 
-Happy querying !
+***Happy querying !***
 
 
 ## Questions?
